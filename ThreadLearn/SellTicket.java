@@ -8,6 +8,7 @@ public class SellTicket {
         window w = new window();
         new Thread(w).start();
         new Thread(w).start();
+        new Thread(w).start();
 
 
 
@@ -17,24 +18,28 @@ public class SellTicket {
 
 class window implements Runnable{
     private int num = 100;
+    private Object o = new Object();
 
     @Override
     public void run() {
+        boolean b;
         do{
-            sell();
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (o) {
+                b = sell();
             }
-        }while(num>0);
-        if(num==0)System.out.println("The ticket Selling is done!");
+            Thread.yield();
+        }while(b);
+
     }
 
-    public synchronized void sell(){
+    public boolean sell(){
+        if(num<0) {
+            System.out.println("The ticket is sold out at "+ Thread.currentThread().getName());
+            return false;
+        }
         System.out.println("Ticket id= "+num +" is sold by "+ Thread.currentThread().getName());
         num--;
-        return;
+        return true;
     }
 
 }
