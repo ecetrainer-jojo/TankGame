@@ -34,6 +34,7 @@ public class MyPanel extends JPanel implements KeyListener {
         for(int i=0; i<enemySize;i++){
             drawTank(enemies.get(i),g);
         }
+
         if(hero.checkBullet()){
             drawBullet(hero,g);
         }
@@ -102,13 +103,19 @@ public class MyPanel extends JPanel implements KeyListener {
             Bullet b = it.next();
             if(b.getState()==Thread.State.TERMINATED){
                 it.remove();
+                System.out.println("bullet dead");
             }
             else{
+                System.out.println("start drawing bullets hahahaha");
+                System.out.println("Bullet"+ b.getxCoordinate() +","+b.getyCoordinate());
                 if(b.getDirection()==0 || b.getDirection()==1){
                     g.fillOval(b.getxCoordinate(),b.getyCoordinate(),10,20);
                 }
                 else{
                     g.fillOval(b.getxCoordinate(),b.getyCoordinate(),20,10);
+                }
+                if(b.getState()==Thread.State.NEW){
+                    b.start();
                 }
             }
         }

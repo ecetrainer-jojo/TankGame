@@ -31,22 +31,24 @@ public class Hero extends Tank {
     public void lunchBullet(){
         switch(direct){
             case 0:
-                super.setBullet(new Bullet(getX()+15,getY()-20,1, direct));
+                super.setBullet(new Bullet(getX()+15,getY()-20,10, direct));
                 break;
 
             case 1:
-                super.setBullet(new Bullet(getX()+15,getY()+60,1, direct));
+                super.setBullet(new Bullet(getX()+15,getY()+60,10, direct));
                 break;
 
             case 2:
-                super.setBullet(new Bullet(getX()-20,getY()+15,1, direct));
+                super.setBullet(new Bullet(getX()-20,getY()+15,10, direct));
                 break;
 
             case 3:
-                super.setBullet(new Bullet(getX()+60,getY()+15,1, direct));
+                super.setBullet(new Bullet(getX()+60,getY()+15,10, direct));
                 break;
 
+
         }
+
     }
 
     @Override
