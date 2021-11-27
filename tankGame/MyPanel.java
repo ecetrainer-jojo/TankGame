@@ -11,9 +11,17 @@ import java.util.Vector;
 //Tank game graphing area
 public class MyPanel extends JPanel implements KeyListener {
     Hero hero = null;
+
     //make a default tanks (support multi-thread)
     Vector<Tank> enemies = new Vector<>();
-    int enemySize = 2;
+    //keep track of the explosion location
+    Vector<Explosion> deadBody = new Vector<>();
+    int enemySize = 4;
+    boolean gameOver = false;
+
+    public boolean isOver(){
+        return gameOver;
+    }
     public MyPanel(){
         //Initialize the User
         hero = new Hero(500,600,0,0); //default initialization of tank
@@ -24,6 +32,8 @@ public class MyPanel extends JPanel implements KeyListener {
             (new Thread(enemy)).start();
         }
 
+
+
     }
 
     @Override
@@ -31,21 +41,45 @@ public class MyPanel extends JPanel implements KeyListener {
         super.paint(g);
         g.fillRect(0,0,1000,750); //This is the background of tank default black
 
+        //check the explosion
+        explosionHandle(enemies,hero);
+
         //Draw the tanks here
         drawTank(hero,g);
-        for(int i=0; i<enemySize;i++){
-            drawTank(enemies.get(i),g);
-            drawBullet(enemies.get(i),g);
-        }
-
         drawBullet(hero,g);
+
+        Iterator<Tank> enemyIt = enemies.iterator();
+        while(enemyIt.hasNext()){
+            Tank currentT = enemyIt.next();
+            boolean checkDead = drawTank(currentT,g);
+            if(!checkDead){
+                enemyIt.remove();
+            }
+            else drawBullet(currentT,g);
+        }
         drawExplosion(g);
+
 
 
     }
 
     //Method to draw the tank
-    public void drawTank(Tank myTank, Graphics g){
+    public boolean drawTank(Tank myTank, Graphics g){
+        if(!myTank.isAlive){
+            Explosion e = new Explosion(myTank.getX(),myTank.getY());
+            deadBody.add(e);
+            e.start();
+            if(myTank.getType()==1){
+                enemySize--;
+                if(enemySize==0){
+                    gameOver = true;
+                }
+            }
+            else{
+                gameOver = true;
+            }
+            return false;
+        }
         switch(myTank.getType()){
             case 0: //our tank
                 g.setColor(Color.CYAN);
@@ -93,7 +127,9 @@ public class MyPanel extends JPanel implements KeyListener {
 
             default:
                 System.out.println("Temporarly not proceed");
+                break;
         }
+        return true;
 
     }
 
@@ -124,7 +160,52 @@ public class MyPanel extends JPanel implements KeyListener {
     //function to draw the explosion
     public void drawExplosion(Graphics g){
         Image explosion = Toolkit.getDefaultToolkit().getImage("src/tankGame/explosion.jpeg");
-        g.drawImage(explosion,10,10,160,120, this);
+        Iterator<Explosion> it = deadBody.iterator();
+        while(it.hasNext()){
+            Explosion e = it.next();
+            if(e.getAlive()){
+                g.drawImage(explosion,e.getX(),e.getY(),160,120, this);
+            }
+            else it.remove();
+        }
+
+
+    }
+
+    //explosion handler from enemy to hero
+    public void explosionHandle(Vector<Tank> enemy, Tank myTank){
+        for(Bullet b: myTank.getBullets()){
+            for(int i=0; i<enemySize; i++){
+                checkExplode(b,enemies.get(i));
+            }
+        }
+
+        for(Tank enemyT : enemy){
+            for(Bullet b: enemyT.getBullets()){
+                checkExplode(b,myTank);
+            }
+        }
+    }
+
+
+    //Create the shooting judgement for the bullets
+    public void checkExplode(Bullet b, Tank myTank){
+        int bulletX = b.getxCoordinate();
+        int bulletY = b.getyCoordinate();
+        int tankX = myTank.getX();
+        int tankY = myTank.getY();
+        if(myTank.getDirect()==0 || myTank.getDirect()==1){
+            if((bulletX>tankX && bulletX < tankX+40) && (bulletY>tankY && bulletY < tankY+60)){
+                myTank.setAlive(false);
+                b.setAlive(false);
+            }
+        }
+        else{
+            if((bulletX>tankX && bulletX < tankX+60) && (bulletY>tankY && bulletY < tankY+40)){
+                myTank.setAlive(false);
+                b.setAlive(false);
+            }
+        }
 
     }
 

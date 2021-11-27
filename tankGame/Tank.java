@@ -7,11 +7,14 @@ abstract public class Tank {
     private int x;
     private int y;
     private Vector<Bullet> bullets;
-    private int numBullets;
+    boolean isAlive;
+
+
     public Tank(int x, int y) {
         this.x = x;
         this.y = y;
         bullets = new Vector<>();
+        isAlive = true;
     }
     public void setX(int x) {
         this.x = x;
@@ -24,6 +27,10 @@ abstract public class Tank {
     }
     public int getY() {
         return y;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 
     public Vector<Bullet> getBullets() {

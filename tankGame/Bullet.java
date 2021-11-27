@@ -5,12 +5,18 @@ public class Bullet extends Thread{
     private int yCoordinate;
     private int speed; //shows how fast the bullet move from the tank
     private int direction; //defines how the bullet is flew
+    private boolean alive;
 
     public Bullet(int x, int y, int sp, int direct){
         xCoordinate = x;
         yCoordinate = y;
         speed = sp;
         direction = direct;
+        alive =true;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     public int getxCoordinate() {
@@ -29,6 +35,9 @@ public class Bullet extends Thread{
     public void run() {
         //it will keep moving to one direction until hitting and enemy or boundary
         while((xCoordinate<940 && xCoordinate>20) && (yCoordinate<670 && yCoordinate>20)){
+            if(alive == false){
+                return;
+            }
             switch(direction){
                 case 0:
                     yCoordinate = Math.max(20, yCoordinate-speed);

@@ -9,7 +9,14 @@ public class TankGame01 extends JFrame {
         while(true){
             Thread.sleep(5);
             refresh();
+            if(mp.isOver()){
+                System.out.println("game over");
+                refresh();
+                Thread.sleep(500);
+                break;
+            }
         }
+        System.exit(0);
 
 
     }

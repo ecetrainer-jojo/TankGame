@@ -52,11 +52,9 @@ public class EnemyTank extends Tank implements Runnable{
         setDirect(reDirect);
         int travelDis;
         //according to the direction find the possible travel distance
-        System.out.println("the enemy at "+getX() +','+getY()+ "is moving");
         if(reDirect==0){
 
             travelDis = (int)(Math.random()*getY());
-            System.out.println(travelDis);
             while(travelDis>0 && getY()>20){
                 setY(getY()-1);
                 Thread.sleep(10);
@@ -65,7 +63,6 @@ public class EnemyTank extends Tank implements Runnable{
         }
         else if(reDirect==1){
             travelDis = (int)(Math.random()*(670-getY()));
-            System.out.println(travelDis);
             while(travelDis>0 && getY()<670){
                 setY(getY()+1);
                 Thread.sleep(10);
@@ -74,7 +71,6 @@ public class EnemyTank extends Tank implements Runnable{
         }
         else if(reDirect==2){
             travelDis = (int)(Math.random()*getX());
-            System.out.println(travelDis);
             while(travelDis>0 && getX()>20){
                 setX(getX()-1);
                 Thread.sleep(10);
@@ -83,7 +79,6 @@ public class EnemyTank extends Tank implements Runnable{
         }
         else if(reDirect==3){
             travelDis =(int)(Math.random()*(940-getX()));
-            System.out.println(travelDis);
             while(travelDis>0 && getX()<940){
                 setX(getX()+1);
                 Thread.sleep(10);
