@@ -13,15 +13,15 @@ public class DeadLock {
 class DeadLockDemo extends Thread{
     static Object o1 = new Object();
     static Object o2 = new Object();
-    boolean flag;
+    boolean flags;
     public DeadLockDemo(boolean flag){
-        this.flag = flag;
+        this.flags = flag;
     }
 
 
     @Override
     public void run(){
-        if(flag){
+        if(flags){
             synchronized (o1){
                 System.out.println(Thread.currentThread().getName()+ "enters 1");
                 while(getState()== State.BLOCKED){
