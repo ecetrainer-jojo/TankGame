@@ -38,7 +38,6 @@ abstract public class Tank {
 
     //method to setBullet
     public void setBullet(Bullet bullet) {
-        System.out.println("bullet created");
         bullets.add(bullet);
     }
 
@@ -48,6 +47,28 @@ abstract public class Tank {
             return false;
         }
         return true;
+    }
+
+    public void lunchBullet(){
+        switch(getDirect()){
+            case 0:
+                setBullet(new Bullet(getX()+15,getY()-20,1, 0));
+                break;
+
+            case 1:
+                setBullet(new Bullet(getX()+15,getY()+60,1, 1));
+                break;
+
+            case 2:
+                setBullet(new Bullet(getX()-20,getY()+15,1,2));
+                break;
+
+            case 3:
+                setBullet(new Bullet(getX()+60,getY()+15,1, 3));
+                break;
+
+        }
+
     }
 
 

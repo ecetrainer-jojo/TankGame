@@ -44,7 +44,7 @@ public class Bullet extends Thread{
 
             }
             try {
-                Thread.sleep(50);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -13,13 +13,15 @@ public class MyPanel extends JPanel implements KeyListener {
     Hero hero = null;
     //make a default tanks (support multi-thread)
     Vector<Tank> enemies = new Vector<>();
-    int enemySize = 3;
+    int enemySize = 2;
     public MyPanel(){
         //Initialize the User
         hero = new Hero(500,600,0,0); //default initialization of tank
         //Initialize the enemy
         for(int i=0; i<enemySize;i++){
-            enemies.add(new EnemyTank(450+100*i,100,1,1));
+            EnemyTank enemy = new EnemyTank(300+200*i,100,1,1);
+            enemies.add(enemy);
+            (new Thread(enemy)).start();
         }
 
     }
@@ -33,11 +35,12 @@ public class MyPanel extends JPanel implements KeyListener {
         drawTank(hero,g);
         for(int i=0; i<enemySize;i++){
             drawTank(enemies.get(i),g);
+            drawBullet(enemies.get(i),g);
         }
 
-        if(hero.checkBullet()){
-            drawBullet(hero,g);
-        }
+        drawBullet(hero,g);
+        drawExplosion(g);
+
 
     }
 
@@ -103,11 +106,8 @@ public class MyPanel extends JPanel implements KeyListener {
             Bullet b = it.next();
             if(b.getState()==Thread.State.TERMINATED){
                 it.remove();
-                System.out.println("bullet dead");
             }
             else{
-                System.out.println("start drawing bullets hahahaha");
-                System.out.println("Bullet"+ b.getxCoordinate() +","+b.getyCoordinate());
                 if(b.getDirection()==0 || b.getDirection()==1){
                     g.fillOval(b.getxCoordinate(),b.getyCoordinate(),10,20);
                 }
@@ -120,6 +120,14 @@ public class MyPanel extends JPanel implements KeyListener {
             }
         }
     }
+
+    //function to draw the explosion
+    public void drawExplosion(Graphics g){
+        Image explosion = Toolkit.getDefaultToolkit().getImage("src/tankGame/explosion.jpeg");
+        g.drawImage(explosion,10,10,160,120, this);
+
+    }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -162,4 +170,6 @@ public class MyPanel extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
         //do nothing here
     }
+
+
 }

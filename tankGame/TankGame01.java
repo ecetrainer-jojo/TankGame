@@ -7,7 +7,7 @@ public class TankGame01 extends JFrame {
     public static void main(String[] args) throws InterruptedException {
         TankGame01 gameStart = new TankGame01();
         while(true){
-            Thread.sleep(100);
+            Thread.sleep(5);
             refresh();
         }
 
