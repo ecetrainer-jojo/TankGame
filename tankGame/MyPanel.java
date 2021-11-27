@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 //Tank game graphing area
@@ -32,6 +33,9 @@ public class MyPanel extends JPanel implements KeyListener {
         drawTank(hero,g);
         for(int i=0; i<enemySize;i++){
             drawTank(enemies.get(i),g);
+        }
+        if(hero.checkBullet()){
+            drawBullet(hero,g);
         }
 
     }
@@ -89,6 +93,27 @@ public class MyPanel extends JPanel implements KeyListener {
 
     }
 
+    //Method to draw bullet
+    public void drawBullet(Tank myTank, Graphics g){
+        Vector<Bullet> bullets = myTank.getBullets();
+        g.setColor(Color.RED);
+        Iterator<Bullet> it = bullets.iterator();
+        while(it.hasNext()){
+            Bullet b = it.next();
+            if(b.getState()==Thread.State.TERMINATED){
+                it.remove();
+            }
+            else{
+                if(b.getDirection()==0 || b.getDirection()==1){
+                    g.fillOval(b.getxCoordinate(),b.getyCoordinate(),10,20);
+                }
+                else{
+                    g.fillOval(b.getxCoordinate(),b.getyCoordinate(),20,10);
+                }
+            }
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
         //do nothing here
@@ -98,6 +123,7 @@ public class MyPanel extends JPanel implements KeyListener {
     //It cost one pressing to change the direction
     @Override
     public void keyPressed(KeyEvent e) {
+        //Here is the direction key
         if(e.getKeyChar()=='w'){
             if(hero.getDirect()!=0) hero.setDirect(0);
             else hero.setY(Math.max(hero.getY()-20,20));
@@ -115,6 +141,11 @@ public class MyPanel extends JPanel implements KeyListener {
         else if(e.getKeyChar()=='d'){
             if(hero.getDirect()!=3) hero.setDirect(3);
             else hero.setX(Math.min(hero.getX()+20,940));
+        }
+
+        //Here is the bullet lunching key
+        else if(e.getKeyChar()=='j'){
+            hero.lunchBullet();
         }
         this.repaint();
 
