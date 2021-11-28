@@ -4,9 +4,9 @@ public class FirstGit
 {
     public static void main(String[] args) {
 
-        for(int i=0 ;i <30; i++) {
-            int reDirect = 670 - (int)(Math.random()*5);
-            System.out.println(reDirect);
+        for(int i=0 ;i <6; i++) {
+            int direct = (int)(Math.random()*4);
+            System.out.println(direct);
         }
     }
 }

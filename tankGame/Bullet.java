@@ -34,22 +34,22 @@ public class Bullet extends Thread{
     @Override
     public void run() {
         //it will keep moving to one direction until hitting and enemy or boundary
-        while((xCoordinate<940 && xCoordinate>20) && (yCoordinate<670 && yCoordinate>20)){
+        while((xCoordinate<MyPanel.BACKGROUND_X && xCoordinate>0) && (yCoordinate<MyPanel.BACKGROUND_Y && yCoordinate>0)){
             if(alive == false){
                 return;
             }
             switch(direction){
                 case 0:
-                    yCoordinate = Math.max(20, yCoordinate-speed);
+                    yCoordinate = Math.max(0, yCoordinate-speed);
                     break;
                 case 1:
-                    yCoordinate = Math.min(670, yCoordinate+speed);
+                    yCoordinate = Math.min(MyPanel.BACKGROUND_Y, yCoordinate+speed);
                     break;
                 case 2:
-                    xCoordinate = Math.max(20, xCoordinate-speed);
+                    xCoordinate = Math.max(0, xCoordinate-speed);
                     break;
                 case 3:
-                    xCoordinate = Math.min(940, xCoordinate+speed);
+                    xCoordinate = Math.min(MyPanel.BACKGROUND_X, xCoordinate+speed);
 
             }
             try {
@@ -58,6 +58,7 @@ public class Bullet extends Thread{
                 e.printStackTrace();
             }
         }
+        System.out.println("The bullet is dead");
 
     }
 }
