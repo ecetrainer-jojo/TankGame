@@ -7,7 +7,8 @@ abstract public class Tank {
     private int x;
     private int y;
     private Vector<Bullet> bullets;
-    boolean isAlive;
+    private boolean isAlive;
+    private boolean collision = false;
 
 
     public Tank(int x, int y) {
@@ -29,8 +30,20 @@ abstract public class Tank {
         return y;
     }
 
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public boolean getCollision(){
+        return collision;
+    }
+
     public void setAlive(boolean alive) {
         isAlive = alive;
+    }
+
+    public boolean getAlive(){
+        return isAlive;
     }
 
     public Vector<Bullet> getBullets() {
@@ -73,10 +86,6 @@ abstract public class Tank {
             case 3:
                 setBullet(new Bullet(getX()+60,getY()+15,1, 3));
                 break;
-
         }
-
     }
-
-
 }

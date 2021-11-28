@@ -44,6 +44,9 @@ public class MyPanel extends JPanel implements KeyListener {
         //check the explosion
         explosionHandle(enemies,hero);
 
+        //check the collision
+        collisionHandle();
+
         //Draw the tanks here
         drawTank(hero,g);
         drawBullet(hero,g);
@@ -65,7 +68,7 @@ public class MyPanel extends JPanel implements KeyListener {
 
     //Method to draw the tank
     public boolean drawTank(Tank myTank, Graphics g){
-        if(!myTank.isAlive){
+        if(!myTank.getAlive()){
             Explosion e = new Explosion(myTank.getX(),myTank.getY());
             deadBody.add(e);
             e.start();
@@ -207,6 +210,20 @@ public class MyPanel extends JPanel implements KeyListener {
             }
         }
 
+    }
+
+    public void collisionHandle() {
+        for(int i=0; i<enemies.size();i++){
+            for(int j=0; j<enemies.size();j++){
+                if(i==j) continue;
+                if(!enemies.get(i).getAlive() || !enemies.get(j).getAlive()) continue;
+                if(Math.abs(enemies.get(i).getX()-enemies.get(j).getX())<60 && Math.abs(enemies.get(i).getY()-enemies.get(j).getY())<60){
+                    enemies.get(i).setCollision(true);
+                    enemies.get(j).setCollision(true);
+                    System.out.println("collision warning");
+                }
+            }
+        }
     }
 
 
