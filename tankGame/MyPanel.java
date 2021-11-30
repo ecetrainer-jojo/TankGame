@@ -40,7 +40,7 @@ public class MyPanel extends JPanel implements KeyListener {
     Vector<Explosion> deadBody = new Vector<>();
 
     //define the enemySize -> the difficulty of enemy
-    int enemySize = 4;
+    int enemySize = 5;
     public boolean gameOver = false;
 
     public MyPanel(){
