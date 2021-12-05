@@ -20,7 +20,7 @@ public class FileCopy {
         byte[] b = new byte[100];
         int readLen;
         FileInputStream fileInputStream = new FileInputStream(srcPath);
-        FileOutputStream fileOutputStream = new FileOutputStream(destPath);
+        FileOutputStream fileOutputStream = new FileOutputStream(destPath,false);
         while((readLen = fileInputStream.read(b))!=-1){
             fileOutputStream.write(b,0, readLen);
         }
