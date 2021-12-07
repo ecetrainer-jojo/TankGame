@@ -16,7 +16,6 @@ public class ScoreBoard {
 
         //Prepare for the drawing the tank
         enemyTank1 = new EnemyTank(MyPanel.BACKGROUND_X + 70, 90,1,0);
-
     }
 
 

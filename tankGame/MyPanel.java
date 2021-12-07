@@ -83,8 +83,14 @@ public class MyPanel extends JPanel implements KeyListener {
         collisionHandle();
 
         //Draw the tanks here
-        drawTank(hero,g);
-        drawBullet(hero,g);
+        try {
+            if(refreshTank(hero,g)){
+                drawTank(hero,g);
+                drawBullet(hero,g);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             drawEnemyTank(g);
@@ -99,7 +105,6 @@ public class MyPanel extends JPanel implements KeyListener {
 
     //Method to perform the enemy initialization
     public void enemyInitialization(){
-        System.out.println(enemies.size());
         boolean overlap;
         int x,y;
         for(int i=0; i<enemySize;i++){
@@ -244,7 +249,7 @@ public class MyPanel extends JPanel implements KeyListener {
         while(it.hasNext()){
             Explosion e = it.next();
             if(e.getAlive()){
-                g.drawImage(explosion,e.getX(),e.getY(),160,120, this);
+                g.drawImage(explosion,e.getX(),e.getY(),80,60, this);
             }
             else it.remove();
         }
