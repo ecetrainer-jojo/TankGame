@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
@@ -26,6 +27,7 @@ public class MyPanel extends JPanel implements KeyListener {
     public static final int INITIALIZE_GAP = 70;
     public static final int BULLET_WIDTH = 10;
     public static final int BULLET_HEIGHT = 20;
+    public static final int SIDE_X = 200;
     public static final String EXPLODE_IMAGE = "src/tankGame/explosion.jpeg";
 
 
@@ -43,9 +45,20 @@ public class MyPanel extends JPanel implements KeyListener {
     int enemySize = 5;
     public boolean gameOver = false;
 
+    //initialize the element scoreboard
+    public ScoreBoard myScoreBoard;
+
     public MyPanel(){
         //Initialize the User
         hero = new Hero(HERO_START_X,HERO_START_Y,0,0); //default initialization of tank
+
+        //Initialize the scoreboard
+        try {
+            myScoreBoard = new ScoreBoard();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         //Initialize the enemy Randomly
         enemyInitialization();
@@ -57,10 +70,14 @@ public class MyPanel extends JPanel implements KeyListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.fillRect(0,0,BACKGROUND_X,BACKGROUND_Y); //This is the background of tank default black
+        g.fillRect(0,0,BACKGROUND_X+SIDE_X,BACKGROUND_Y); //This is the background of tank default black
+
+        //draw the scoreboard
+        if(myScoreBoard!=null) myScoreBoard.drawScore(g);
 
         //check the explosion
         explosionHandle(enemies,hero);
+
 
         //check the collision
         collisionHandle();
@@ -69,7 +86,11 @@ public class MyPanel extends JPanel implements KeyListener {
         drawTank(hero,g);
         drawBullet(hero,g);
 
-        drawEnemyTank(g);
+        try {
+            drawEnemyTank(g);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         drawExplosion(g);
 
 
@@ -107,23 +128,32 @@ public class MyPanel extends JPanel implements KeyListener {
         return false;
     }
 
-    //Method to draw the tank
-    public boolean drawTank(Tank myTank, Graphics g){
+    //Fresh the tank and invoke the explosion if the tank is dead
+    public boolean refreshTank(Tank myTank, Graphics g) throws IOException {
         if(!myTank.getAlive()){
             Explosion e = new Explosion(myTank.getX(),myTank.getY());
             deadBody.add(e);
             e.start();
-            if(myTank.getType()==1){
+            if(myTank.getType()!=0){
                 enemySize--;
+                myScoreBoard.addCurrentKill();
                 if(enemySize==0){
+                    myScoreBoard.logUpdate();
                     gameOver = true;
                 }
             }
             else{
                 gameOver = true;
+                myScoreBoard.logUpdate();
             }
             return false;
         }
+        return true;
+    }
+
+    //Method to draw the tank
+    public void drawTank(Tank myTank, Graphics g){
+
         switch (myTank.getType()) {
             case 0 -> //our tank
                     g.setColor(Color.CYAN);
@@ -162,22 +192,24 @@ public class MyPanel extends JPanel implements KeyListener {
             }
             default -> System.out.println("Temporarly not proceed");
         }
-        return true;
 
     }
 
     //Method to drawEnemyTank
-    public void drawEnemyTank(Graphics g){
+    public void drawEnemyTank(Graphics g) throws IOException {
         Iterator<Tank> enemyIt = enemies.iterator();
         while(enemyIt.hasNext()){
             Tank currentT = enemyIt.next();
 
             //check if the enemy should be deleted
-            boolean checkDead = drawTank(currentT,g);
+            boolean checkDead = refreshTank(currentT,g);
             if(!checkDead){
                 enemyIt.remove();
             }
-            else drawBullet(currentT,g);
+            else {
+                drawTank(currentT,g);
+                drawBullet(currentT,g);
+            }
         }
     }
 
@@ -268,7 +300,6 @@ public class MyPanel extends JPanel implements KeyListener {
                     enemies.get(i).setCollision(true);
                     hero.setCollision(true);
                     heroPass = false;
-                    System.out.println("collision warning: HERO");
                 }
             }
             for(int j=0; j<enemies.size();j++){
@@ -277,7 +308,6 @@ public class MyPanel extends JPanel implements KeyListener {
                 if(!enemies.get(i).getAlive() || !enemies.get(j).getAlive()) continue;
                 if(Math.abs(enemies.get(i).getX()-enemies.get(j).getX())<INITIALIZE_GAP && Math.abs(enemies.get(i).getY()-enemies.get(j).getY())<INITIALIZE_GAP){
                     enemies.get(i).setCollision(true);
-                    System.out.println("collision warning: Enemy");
                 }
             }
         }

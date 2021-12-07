@@ -58,7 +58,6 @@ public class Bullet extends Thread{
                 e.printStackTrace();
             }
         }
-        System.out.println("The bullet is dead");
 
     }
 }
