@@ -1,8 +1,9 @@
 package tankGame;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-abstract public class Tank {
+abstract public class Tank implements Serializable {
     //set the coordinate of the tanks
     private int x;
     private int y;

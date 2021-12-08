@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class startPanel{
-    public boolean modeSelected = false;
+    public int modeSelected = 0;
     public final static String START_PATH = "src/tankGame/Start.png";
     public final static String RESUME_PATH = "src/tankGame/Resume.png";
     public final static String SCREEN_PATH = "src/tankGame/Screen.jpeg";

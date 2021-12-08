@@ -38,6 +38,14 @@ public class ScoreBoard {
         currentKill++;
     }
 
+    public void setCurrentKill(int currentKill) {
+        this.currentKill = currentKill;
+    }
+
+    public int getCurrentKill() {
+        return currentKill;
+    }
+
     public void drawScore(Graphics g) {
         //draw out the sidebar to show the mark the user get
         g.setColor(Color.white);

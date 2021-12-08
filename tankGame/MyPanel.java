@@ -36,7 +36,7 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
 
 
     //set hero to be null number
-    Hero hero = null;
+    Hero hero = new Hero(0,0,0,0);
 
     //make a default tanks (support multi-thread)
     Vector<Tank> enemies = new Vector<>();
@@ -48,14 +48,40 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     int enemySize = 5;
     public boolean gameOver = false;
 
+    public boolean gamePaused = false;
+
     //initialize the element scoreboard
     public ScoreBoard myScoreBoard;
 
     //initialize the startPanel
     public startPanel sp = new startPanel();
 
-    public MyPanel(){
-        defaultInitialize();
+    //initialize the resumeHandler
+    public resumeHandler resumeGame;
+
+    public MyPanel() throws IOException {
+        resumeGame = new resumeHandler();
+
+    }
+
+    public void resumeInitialize(){
+        try {
+            int res = 0;
+            if(resumeHandler.resumeLog.length()==0){
+                defaultInitialize();
+            }
+            else{
+                myScoreBoard = new ScoreBoard();
+                res = resumeGame.loadLog(enemies);
+                myScoreBoard.setCurrentKill(resumeGame.resumeKilling);
+                hero.setX(resumeGame.heroX);
+                hero.setY(resumeGame.heroY);
+                enemySize = res;
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void defaultInitialize(){
@@ -112,10 +138,22 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if(sp.modeSelected==false){
+        if(sp.modeSelected==0){
             drawStartScreen(g);
         }
-        else drawGame(g);
+        else if(sp.modeSelected==1) {
+            defaultInitialize();
+            sp.modeSelected = 3;
+        }
+
+        else if(sp.modeSelected==2) {
+            resumeInitialize();
+            sp.modeSelected = 3;
+        }
+        else{
+            drawGame(g);
+        }
+
 
     }
 
@@ -164,8 +202,8 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
                 }
             }
             else{
-                gameOver = true;
                 myScoreBoard.logUpdate();
+                gameOver = true;
             }
             return false;
         }
@@ -365,9 +403,12 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     @Override
     public void keyPressed(KeyEvent e) {
         //Do the overall control with Game over
-        if(gameOver) return;
+        if(gameOver || gamePaused) return;
         while(hero.getCollision()) {
             return;
+        }
+        if(e.getKeyChar()=='p'){
+            gamePaused = true;
         }
         //Here is the direction key
         if(e.getKeyChar()=='w'){
@@ -405,14 +446,14 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(sp.modeSelected==false){
+        if(sp.modeSelected==0){
             if(e.getX()>100 && e.getX()<475 && e.getY()>500 && e.getY()<635){
                 System.out.println("clicked start");
-                sp.modeSelected = true;
+                sp.modeSelected = 1;
             }
             else if(e.getX()>750 && e.getX()<1124 && e.getY()>500 && e.getY()<635) {
                 System.out.println("clicked resume");
-                sp.modeSelected = true;
+                sp.modeSelected = 2;
             }
         }
     }
