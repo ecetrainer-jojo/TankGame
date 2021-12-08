@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,7 +17,7 @@ import java.util.Vector;
 
 
 //Tank game graphing area
-public class MyPanel extends JPanel implements KeyListener {
+public class MyPanel extends JPanel implements KeyListener, MouseListener {
     //define some constant here
     public static final int HERO_START_X = 500;
     public static final int HERO_START_Y = 600;
@@ -49,7 +51,14 @@ public class MyPanel extends JPanel implements KeyListener {
     //initialize the element scoreboard
     public ScoreBoard myScoreBoard;
 
+    //initialize the startPanel
+    public startPanel sp = new startPanel();
+
     public MyPanel(){
+        defaultInitialize();
+    }
+
+    public void defaultInitialize(){
         //Initialize the User
         hero = new Hero(HERO_START_X,HERO_START_Y,0,0); //default initialization of tank
 
@@ -60,28 +69,22 @@ public class MyPanel extends JPanel implements KeyListener {
             e.printStackTrace();
         }
 
-
         //Initialize the enemy Randomly
         enemyInitialization();
-
-
-
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void drawStartScreen(Graphics g){
+        sp.graphStart(g,this);
+    }
+
+    public void drawGame(Graphics g){
         g.fillRect(0,0,BACKGROUND_X+SIDE_X,BACKGROUND_Y); //This is the background of tank default black
-
         //draw the scoreboard
-        if(myScoreBoard!=null) myScoreBoard.drawScore(g);
+        if(myScoreBoard!=null) myScoreBoard.drawScore(g); //check the explosion
 
-        //check the explosion
-        explosionHandle(enemies,hero);
+        explosionHandle(enemies,hero); //Handle if the explosion occurs
 
-
-        //check the collision
-        collisionHandle();
+        collisionHandle(); //check the collision
 
         //Draw the tanks here
         try {
@@ -94,9 +97,7 @@ public class MyPanel extends JPanel implements KeyListener {
                 drawTank(hero,g);
                 drawBullet(hero,g);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -106,8 +107,15 @@ public class MyPanel extends JPanel implements KeyListener {
             e.printStackTrace();
         }
         drawExplosion(g);
+    }
 
-
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if(sp.modeSelected==false){
+            drawStartScreen(g);
+        }
+        else drawGame(g);
 
     }
 
@@ -391,8 +399,41 @@ public class MyPanel extends JPanel implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //do nothing here
+
     }
 
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(sp.modeSelected==false){
+            if(e.getX()>100 && e.getX()<475 && e.getY()>500 && e.getY()<635){
+                System.out.println("clicked start");
+                sp.modeSelected = true;
+            }
+            else if(e.getX()>750 && e.getX()<1124 && e.getY()>500 && e.getY()<635) {
+                System.out.println("clicked resume");
+                sp.modeSelected = true;
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
