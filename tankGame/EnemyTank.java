@@ -9,6 +9,7 @@ public class EnemyTank extends Tank implements Runnable{
         super(x, y);
         this.type = type;
         this.direct = direct;
+        setArmor(2);
     }
 
     @Override
@@ -41,6 +42,10 @@ public class EnemyTank extends Tank implements Runnable{
                 int reDirect = (int)(Math.random()*4);
                 boolean res = travelDirect(reDirect);
                 while(!res){
+                    if(isDamaged()){
+                        Thread.sleep(500);
+                        setDamaged(false);
+                    }
                     if(reDirect==0){
                         setCollision(false);
                         res = travelDirect(1);
@@ -71,7 +76,7 @@ public class EnemyTank extends Tank implements Runnable{
         if(direct==0){
             travelDis = (int)(Math.random()*getY());
             while(travelDis>0 && getY()>20){
-                if(getCollision()){
+                if(getCollision() || isDamaged()){
                     return false;
                 }
                 setY(getY()-1);
@@ -82,7 +87,7 @@ public class EnemyTank extends Tank implements Runnable{
         else if(direct==1){
             travelDis = (int)(Math.random()*(670-getY()));
             while(travelDis>0 && getY()<670){
-                if(getCollision()){
+                if(getCollision() || isDamaged()){
                     return false;
                 }
                 setY(getY()+1);
@@ -93,7 +98,7 @@ public class EnemyTank extends Tank implements Runnable{
         else if(direct==2){
             travelDis = (int)(Math.random()*getX());
             while(travelDis>0 && getX()>20){
-                if(getCollision()){
+                if(getCollision() || isDamaged()){
                     return false;
                 }
                 setX(getX()-1);
@@ -104,7 +109,7 @@ public class EnemyTank extends Tank implements Runnable{
         else if(direct==3){
             travelDis =(int)(Math.random()*(940-getX()));
             while(travelDis>0 && getX()<940){
-                if(getCollision()){
+                if(getCollision() || isDamaged()){
                     return false;
                 }
                 setX(getX()+1);

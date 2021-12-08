@@ -15,6 +15,7 @@ public class Hero extends Tank {
         super(x, y);
         this.type = type;
         this.direct = direct;
+        setArmor(3);
 
     }
 

@@ -8,7 +8,7 @@ public class TankGame01 extends JFrame {
     public static void main(String[] args) throws InterruptedException {
         TankGame01 gameStart = new TankGame01();
         while(true){
-            Thread.sleep(5);
+            Thread.sleep(20);
             refresh();
             if(mp.gameOver){
                 System.out.println("game over");

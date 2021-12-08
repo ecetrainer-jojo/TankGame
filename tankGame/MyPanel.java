@@ -1,5 +1,6 @@
 package tankGame;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -85,10 +86,17 @@ public class MyPanel extends JPanel implements KeyListener {
         //Draw the tanks here
         try {
             if(refreshTank(hero,g)){
+                if(hero.isDamaged()){
+                    System.out.println("here damaged");
+                    Thread.sleep(20);
+                    hero.setDamaged(false);
+                }
                 drawTank(hero,g);
                 drawBullet(hero,g);
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -164,6 +172,8 @@ public class MyPanel extends JPanel implements KeyListener {
                     g.setColor(Color.CYAN);
             case 1 -> g.setColor(Color.orange);
         }
+
+        if(myTank.isDamaged()) g.setColor(Color.gray);
 
         //according to the direction of the tank draw the tank
         switch (myTank.getDirect()) {
@@ -261,6 +271,7 @@ public class MyPanel extends JPanel implements KeyListener {
     public void explosionHandle(Vector<Tank> enemy, Tank myTank){
         //check if hero bullets will kill the enemy
         for(Bullet b: myTank.getBullets()){
+            if(!b.isAlive() || myTank.isDamaged()) continue;
             for(int i=0; i<enemySize; i++){
                 checkExplode(b,enemies.get(i));
             }
@@ -269,6 +280,7 @@ public class MyPanel extends JPanel implements KeyListener {
         //check if enemy bullets will kill the hero
         for(Tank enemyT : enemy){
             for(Bullet b: enemyT.getBullets()){
+                if(!b.isAlive() || myTank.isDamaged()) continue;
                 checkExplode(b,myTank);
             }
         }
@@ -276,23 +288,38 @@ public class MyPanel extends JPanel implements KeyListener {
 
 
     //Create the shooting judgement for the bullets
-    public void checkExplode(Bullet b, Tank myTank){
+    public boolean checkExplode(Bullet b, Tank myTank){
         int bulletX = b.getxCoordinate();
         int bulletY = b.getyCoordinate();
         int tankX = myTank.getX();
         int tankY = myTank.getY();
         if(myTank.getDirect()==0 || myTank.getDirect()==1){
             if((bulletX>tankX && bulletX < tankX+40) && (bulletY>tankY && bulletY < tankY+60)){
-                myTank.setAlive(false);
+                myTank.setArmor(myTank.getArmor()-1);
+                if(myTank.getArmor()==0){
+                    myTank.setAlive(false);
+                }
+                else{
+                    myTank.setDamaged(true);
+                }
                 b.setAlive(false);
+                return true;
             }
         }
         else{
             if((bulletX>tankX && bulletX < tankX+60) && (bulletY>tankY && bulletY < tankY+40)){
-                myTank.setAlive(false);
+                myTank.setArmor(myTank.getArmor()-1);
+                if(myTank.getArmor()==0){
+                    myTank.setAlive(false);
+                }
+                else{
+                    myTank.setDamaged(true);
+                }
                 b.setAlive(false);
+                return true;
             }
         }
+        return false;
 
     }
 

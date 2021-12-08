@@ -9,6 +9,8 @@ abstract public class Tank {
     private Vector<Bullet> bullets;
     private boolean isAlive;
     private boolean collision = false;
+    private int armor = 1;
+    private boolean damaged = false;
 
 
     public Tank(int x, int y) {
@@ -16,6 +18,7 @@ abstract public class Tank {
         this.y = y;
         bullets = new Vector<>();
         isAlive = true;
+        damaged = false;
     }
     public void setX(int x) {
         this.x = x;
@@ -46,6 +49,14 @@ abstract public class Tank {
         return isAlive;
     }
 
+    public boolean isDamaged() {
+        return damaged;
+    }
+
+    public void setDamaged(boolean damaged) {
+        this.damaged = damaged;
+    }
+
     public Vector<Bullet> getBullets() {
         return bullets;
     }
@@ -61,6 +72,17 @@ abstract public class Tank {
         bullets.add(bullet);
     }
 
+    //method to set the armor
+    public void setArmor(int armor) {
+        this.armor = armor;
+    }
+
+    //method to get the armor
+
+
+    public int getArmor() {
+        return armor;
+    }
 
     public boolean checkBullet(){
         if(bullets.size()==0){

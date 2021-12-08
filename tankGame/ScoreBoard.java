@@ -4,11 +4,10 @@ import java.awt.*;
 import java.io.*;
 
 public class ScoreBoard {
-    private final File gameLog = new File("src/tankGame/Record.dat");
+    private final File gameLog = new File("src/tankGame/Record.txt");
     private int currentKill = 0;
     private int historicalKill = 0;
     public EnemyTank enemyTank1;
-    boolean fileExist = false;
 
     //The constructor the scoreboard
     public ScoreBoard() throws IOException {
@@ -31,7 +30,6 @@ public class ScoreBoard {
         }
         else {
             gameLog.createNewFile();
-            fileExist = false;
         }
     }
 
@@ -74,7 +72,7 @@ public class ScoreBoard {
     //update the game log
     public void logUpdate() throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(gameLog,true));
-        if(fileExist) bufferedWriter.newLine();
+        bufferedWriter.newLine();
         bufferedWriter.write(Integer.toString(currentKill));
         bufferedWriter.close();
     }
