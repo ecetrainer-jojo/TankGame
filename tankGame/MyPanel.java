@@ -45,7 +45,7 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     Vector<Explosion> deadBody = new Vector<>();
 
     //define the enemySize -> the difficulty of enemy
-    int enemySize = 5;
+    int enemySize = 2;
     public boolean gameOver = false;
 
     public boolean gamePaused = false;
@@ -59,8 +59,12 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     //initialize the resumeHandler
     public resumeHandler resumeGame;
 
+    //initialize the difficulty handler
+    public difficultyHandler dfHandler;
+
     public MyPanel() throws IOException {
         resumeGame = new resumeHandler();
+        dfHandler = new difficultyHandler();
 
     }
 
@@ -95,12 +99,19 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
             e.printStackTrace();
         }
 
+        //get the size of the enemy
+        enemySize = difficultyHandler.ENEMY_SIZE[dfHandler.getDifficulty()];
+
         //Initialize the enemy Randomly
         enemyInitialization();
     }
 
     public void drawStartScreen(Graphics g){
         sp.graphStart(g,this);
+    }
+
+    public void drawDifficultyScreen(Graphics g){
+        sp.difficultyPop(g,this);
     }
 
     public void drawGame(Graphics g){
@@ -141,9 +152,12 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
         if(sp.modeSelected==0){
             drawStartScreen(g);
         }
-        else if(sp.modeSelected==1) {
-            defaultInitialize();
-            sp.modeSelected = 3;
+        else if(sp.modeSelected==1 ) {
+            if(dfHandler.isSelected()){
+                defaultInitialize();
+                sp.modeSelected = 3;
+            }
+            drawDifficultyScreen(g);
         }
 
         else if(sp.modeSelected==2) {
@@ -454,6 +468,26 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
             else if(e.getX()>750 && e.getX()<1124 && e.getY()>500 && e.getY()<635) {
                 System.out.println("clicked resume");
                 sp.modeSelected = 2;
+            }
+        }
+        else if(sp.modeSelected==1){
+            if(e.getY()>=difficultyHandler.SELECT_Y_MIN && e.getY()<=difficultyHandler.SELECT_Y_MAX){
+                if(e.getX()>=difficultyHandler.HARD_X_MIN && e.getX()<difficultyHandler.HARD_X_MAX){
+                    dfHandler.setDifficulty(2);
+                    dfHandler.setSelected(true);
+                    System.out.println("Hard Selected");
+                }
+                else if(e.getX()>=difficultyHandler.MEDIUM_X_MIN && e.getX()<difficultyHandler.MEDIUM_X_MAX){
+                    dfHandler.setDifficulty(1);
+                    dfHandler.setSelected(true);
+                    System.out.println("Medium Selected");
+                }
+                else if(e.getX()>=difficultyHandler.EASY_X_MIN && e.getX()<difficultyHandler.EASY_X_MAX){
+                    dfHandler.setDifficulty(0);
+                    dfHandler.setSelected(true);
+                    System.out.println("Easy Selected");
+                }
+
             }
         }
     }
