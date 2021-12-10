@@ -31,4 +31,13 @@ public class difficultyHandler {
     public boolean isSelected() {
         return isSelected;
     }
+
+    int enemyTypeGenerator(){
+        if(difficulty==0 || difficulty==1){
+            return 1+(int)(Math.random()*2);
+        }
+        else{
+            return 2+(int)(Math.random()*2);
+        }
+    }
 }

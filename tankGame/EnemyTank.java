@@ -3,13 +3,15 @@ package tankGame;
 public class EnemyTank extends Tank implements Runnable{
     private int type = 1;
     private int direct = 0;
-    private int speed = 1;
 
+    //Type 1 Tank will have an armor of 1;
+    //Type 2 Tank will have an armor of 2;
+    //Type 3 Tank will have an armor of 3;
     public EnemyTank(int x, int y, int type, int direct) {
         super(x, y);
         this.type = type;
         this.direct = direct;
-        setArmor(2);
+        setArmor(type);
     }
 
     @Override

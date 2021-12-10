@@ -2,19 +2,34 @@ package tankGame;
 
 import java.awt.*;
 import java.io.*;
+import java.util.HashSet;
 
 public class ScoreBoard {
     private final File gameLog = new File("src/tankGame/Record.txt");
-    private int currentKill = 0;
+    //shows the killing for different tanks
+
+    private int[] currentKill = new int[3];
     private int historicalKill = 0;
-    public EnemyTank enemyTank1;
+
+    //add the prototype of the Existing Tanks for drawing on scoreboard
+    public EnemyTank enemyTank1 = null;
+    public EnemyTank enemyTank2 = null;
+    public EnemyTank enemyTank3 = null;
+
 
     //The constructor the scoreboard
-    public ScoreBoard() throws IOException {
+    //Prepare for the drawing the tank
+    public ScoreBoard(HashSet<Integer> enemyTypes) throws IOException {
         logAccess();
+        int count = 0;
 
-        //Prepare for the drawing the tank
-        enemyTank1 = new EnemyTank(MyPanel.BACKGROUND_X + 70, 90,1,0);
+        //Decide the position of the tanks
+        for(Integer i:enemyTypes){
+            if(i==1) enemyTank1 = new EnemyTank(MyPanel.BACKGROUND_X + 70, 90 + count *100,i,0);
+            else if(i==2) enemyTank2 = new EnemyTank(MyPanel.BACKGROUND_X + 70, 90 + count *100,i,0);
+            else enemyTank3 = new EnemyTank(MyPanel.BACKGROUND_X + 70, 90 + count *100,i,0);
+            count++;
+        }
     }
 
 
@@ -34,15 +49,25 @@ public class ScoreBoard {
     }
 
     //function to refresh the current kills
-    public void addCurrentKill(){
-        currentKill++;
+    public void addCurrentKill(Tank myTank){
+        if(myTank.getType()==1){
+            currentKill[0]++;
+        }
+        else if(myTank.getType()==2){
+            currentKill[1]++;
+        }
+        else{
+            currentKill[2]++;
+        }
     }
 
-    public void setCurrentKill(int currentKill) {
-        this.currentKill = currentKill;
+    public void setCurrentKill(int[] kills) {
+        currentKill[0] = kills[0];
+        currentKill[1] = kills[1];
+        currentKill[2] = kills[2];
     }
 
-    public int getCurrentKill() {
+    public int[] getCurrentKill() {
         return currentKill;
     }
 
@@ -54,11 +79,29 @@ public class ScoreBoard {
         g.drawString("Your Best Score:  "+ historicalKill, MyPanel.BACKGROUND_X + 15,20);
         g.drawString("Your Score This Game ", MyPanel.BACKGROUND_X + 15,45);
 
+        int count = 0;
         if (enemyTank1 != null) {
             drawTank(enemyTank1, g);
             g.setColor(Color.BLACK);
-            g.drawString(Integer.toString(currentKill), MyPanel.BACKGROUND_X + 150,  120);
+            g.drawString(Integer.toString(currentKill[0]), MyPanel.BACKGROUND_X + 150,  120+100*count);
+            count++;
         }
+        if (enemyTank2 != null) {
+            drawTank(enemyTank2, g);
+            g.setColor(Color.BLACK);
+            g.drawString(Integer.toString(currentKill[1]), MyPanel.BACKGROUND_X + 150,  120+100*count);
+            count++;
+        }
+        if (enemyTank3 != null) {
+            drawTank(enemyTank3, g);
+            g.setColor(Color.BLACK);
+            g.drawString(Integer.toString(currentKill[2]), MyPanel.BACKGROUND_X + 150,  120+100*count);
+            count++;
+        }
+
+
+
+
     }
 
     //Method to draw the tank
@@ -66,6 +109,8 @@ public class ScoreBoard {
 
         switch (myTank.getType()) {
             case 1 -> g.setColor(Color.orange);
+            case 2 -> g.setColor(Color.PINK);
+            case 3 ->g.setColor(Color.red);
         }
 
         g.fill3DRect(myTank.getX(), myTank.getY(), 10, 60, true);
@@ -81,7 +126,7 @@ public class ScoreBoard {
     public void logUpdate() throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(gameLog,true));
         bufferedWriter.newLine();
-        bufferedWriter.write(Integer.toString(currentKill));
+        bufferedWriter.write(Integer.toString(currentKill[0]+currentKill[1]+currentKill[2]));
         bufferedWriter.close();
     }
 

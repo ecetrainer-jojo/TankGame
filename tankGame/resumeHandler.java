@@ -1,6 +1,7 @@
 package tankGame;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.Vector;
 //The resume log will keep record of the Position of the tanks + The number of tanks killed
 
@@ -8,7 +9,7 @@ public class resumeHandler {
     public final static File resumeLog = new File("src/tankGame/resume.txt");
     public int heroX;
     public int heroY;
-    public int resumeKilling;
+    public int[] resumeKilling = new int[3];
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
@@ -18,21 +19,24 @@ public class resumeHandler {
         }
     }
 
-    public int loadLog(Vector<Tank> enemies) throws IOException, ClassNotFoundException {
+    public int loadLog(Vector<Tank> enemies, HashSet<Integer> enemyTypes) throws IOException, ClassNotFoundException {
         objectInputStream = new ObjectInputStream(new FileInputStream(resumeLog));
         int enemySize = objectInputStream.readInt();
         System.out.println(enemySize);
         for (int i = 0; i < enemySize; i++) {
-            EnemyTank newEnemy = (EnemyTank) readTank(objectInputStream,1);
+            EnemyTank newEnemy = (EnemyTank) readTank(objectInputStream,1,enemyTypes);
             enemies.add(newEnemy);
             (new Thread(newEnemy)).start();
         }
-        readTank(objectInputStream,0);
-        resumeKilling = objectInputStream.readInt();
+        readTank(objectInputStream,0,enemyTypes);
+        resumeKilling[0] = objectInputStream.readInt();
+        resumeKilling[1] = objectInputStream.readInt();
+        resumeKilling[2] = objectInputStream.readInt();
+
         objectInputStream.close();
         return enemySize;
     }
-     public Tank readTank(ObjectInputStream objectInputStream, int mode) throws IOException {
+     public Tank readTank(ObjectInputStream objectInputStream, int mode, HashSet<Integer> enemyTypes) throws IOException {
         //need to read x, y, type direct
         int x = objectInputStream.readInt();
         int y = objectInputStream.readInt();
@@ -44,6 +48,7 @@ public class resumeHandler {
             return null;
         }
         else{
+            enemyTypes.add(type);
             return new EnemyTank(x,y,type,direct);
         }
      }
@@ -62,7 +67,9 @@ public class resumeHandler {
             saveTank(objectOutputStream,enemies.get(i));
         }
         saveTank(objectOutputStream,hero);
-        objectOutputStream.writeInt(myScoreBoard.getCurrentKill());
+        objectOutputStream.writeInt(myScoreBoard.getCurrentKill()[0]);
+        objectOutputStream.writeInt(myScoreBoard.getCurrentKill()[1]);
+        objectOutputStream.writeInt(myScoreBoard.getCurrentKill()[2]);
         objectOutputStream.close();
     }
 

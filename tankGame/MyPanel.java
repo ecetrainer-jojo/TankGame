@@ -8,12 +8,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Timer;
-import java.util.Vector;
-
-
 
 
 //Tank game graphing area
@@ -38,8 +34,11 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     //set hero to be null number
     Hero hero = new Hero(0,0,0,0);
 
-    //make a default tanks (support multi-thread)
+    //make the enemy tank (support multi-thread)
     Vector<Tank> enemies = new Vector<>();
+
+    //keep track of the type of enemy
+    HashSet<Integer> enemyTypes = new HashSet<>();
 
     //keep track of the explosion location
     Vector<Explosion> deadBody = new Vector<>();
@@ -75,8 +74,8 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
                 defaultInitialize();
             }
             else{
-                myScoreBoard = new ScoreBoard();
-                res = resumeGame.loadLog(enemies);
+                res = resumeGame.loadLog(enemies, enemyTypes);
+                myScoreBoard = new ScoreBoard(enemyTypes);
                 myScoreBoard.setCurrentKill(resumeGame.resumeKilling);
                 hero.setX(resumeGame.heroX);
                 hero.setY(resumeGame.heroY);
@@ -92,18 +91,18 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
         //Initialize the User
         hero = new Hero(HERO_START_X,HERO_START_Y,0,0); //default initialization of tank
 
-        //Initialize the scoreboard
-        try {
-            myScoreBoard = new ScoreBoard();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         //get the size of the enemy
         enemySize = difficultyHandler.ENEMY_SIZE[dfHandler.getDifficulty()];
 
         //Initialize the enemy Randomly
         enemyInitialization();
+
+        //Initialize the scoreboard
+        try {
+            myScoreBoard = new ScoreBoard(enemyTypes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void drawStartScreen(Graphics g){
@@ -183,8 +182,12 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
                 y = (int) (Math.random() * VALID_Y_MAX) - VALID_Y_MIN;
                 overlap = isOverlap(x,y,i);
             }while(overlap);
+            //use the difficulty handler to generate the strength of enemy Tank
+            int type = dfHandler.enemyTypeGenerator();
+            //insert the type into the enemyTypes
+            enemyTypes.add(type);
             //insert that into the vector array
-            EnemyTank tankCreated = new EnemyTank(x,y,1,direct);
+            EnemyTank tankCreated = new EnemyTank(x,y,type,direct);
             (new Thread(tankCreated)).start();
             enemies.add(tankCreated);
         }
@@ -209,7 +212,7 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
             e.start();
             if(myTank.getType()!=0){
                 enemySize--;
-                myScoreBoard.addCurrentKill();
+                myScoreBoard.addCurrentKill(myTank);
                 if(enemySize==0){
                     myScoreBoard.logUpdate();
                     gameOver = true;
@@ -228,9 +231,10 @@ public class MyPanel extends JPanel implements KeyListener, MouseListener {
     public void drawTank(Tank myTank, Graphics g){
 
         switch (myTank.getType()) {
-            case 0 -> //our tank
-                    g.setColor(Color.CYAN);
+            case 0 -> g.setColor(Color.CYAN);
             case 1 -> g.setColor(Color.orange);
+            case 2 -> g.setColor(Color.PINK);
+            case 3 ->g.setColor(Color.red);
         }
 
         if(myTank.isDamaged()) g.setColor(Color.gray);
