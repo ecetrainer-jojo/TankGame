@@ -1,6 +1,5 @@
 package JavaIOLearn.FileOutputStreamLearn;
 
-import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,7 +13,6 @@ public class FileOutputStreamLearn {
     //show how to use the FileOutPutStream and write data into the file
     //if the file not exist then create such file
 
-    @Test
     public void writeFile() throws IOException {
         String path = "src/JavaIOLearn/test.txt";
         FileOutputStream fileOutputStream = new FileOutputStream(path,true);

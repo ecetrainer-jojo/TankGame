@@ -1,7 +1,7 @@
 package JavaIOLearn.FileOutputStreamLearn;
 
 import JavaIOLearn.FileInpuyStream.FileInputStreamLearn;
-import org.junit.jupiter.api.Test;
+
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,7 +13,6 @@ public class FileCopy {
 
     }
 
-    @Test
     public void copyOperation() throws IOException {
         String srcPath = "src/tankGame/explosion.jpeg";
         String destPath = "src/JavaIOLearn/FileOutputStreamLearn/copySample.jpeg";
